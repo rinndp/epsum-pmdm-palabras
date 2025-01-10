@@ -10,7 +10,7 @@ import java.util.List;
 public class PalabraViewModel extends AndroidViewModel {
     private PalabraRepository mPalabraRepository;
     private final LiveData<List<Palabra>> mPalabras;
-    
+
     public PalabraViewModel (Application application) {
         super(application);
         mPalabraRepository = new PalabraRepository(application);
