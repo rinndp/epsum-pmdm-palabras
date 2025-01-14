@@ -1,6 +1,10 @@
 package com.rinndp.palabrasroom;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.EditText;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -11,11 +15,13 @@ import androidx.lifecycle.LiveData;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
-    LiveData<List<Palabra>> listPalabras;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,8 +30,36 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         RecyclerView recyclerViewPalabras = findViewById(R.id.recyclerViewPalabras);
-        PalabraRVAdapter adapter =new PalabraRVAdapter(this, listPalabras);
+        PalabraRVAdapter adapter =new PalabraRVAdapter(new PalabraRVAdapter.WordDiff());
         recyclerViewPalabras.setAdapter(adapter);
         recyclerViewPalabras.setLayoutManager(new LinearLayoutManager(this));
+
+        FloatingActionButton addWord = findViewById(R.id.addWord);
+
+        addWord.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                LayoutInflater layoutInflater = LayoutInflater.from(MainActivity.this);
+                View inflator = layoutInflater.inflate(R.layout.custom_alert_dialog, null);
+                MaterialAlertDialogBuilder materialAlertDialogBuilder = new MaterialAlertDialogBuilder(MainActivity.this)
+                        .setTitle("Añadir palabra")
+                        .setView(inflator)
+                        .setPositiveButton("Añadir", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                EditText palabraNuevaET = inflator.findViewById(R.id.addWordET);
+                                String textoPalabraNueva = palabraNuevaET.getText().toString();
+                                adapter.addWordListaPalabras(textoPalabraNueva);
+                            }
+
+                        })
+                        .setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {}
+                        });
+
+                materialAlertDialogBuilder.show();
+            }
+        });
     }
 }

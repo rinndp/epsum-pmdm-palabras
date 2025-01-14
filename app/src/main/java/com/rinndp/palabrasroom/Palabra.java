@@ -12,6 +12,7 @@ public class Palabra {
     @NonNull
     @ColumnInfo(name = "palabra")
     private String mPalabra;
+
     public Palabra (@NonNull String mPalabra) {
         this.mPalabra = mPalabra;
     }
