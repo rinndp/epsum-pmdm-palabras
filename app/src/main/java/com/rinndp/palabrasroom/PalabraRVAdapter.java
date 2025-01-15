@@ -7,25 +7,14 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.lifecycle.LiveData;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class PalabraRVAdapter extends ListAdapter<Palabra, PalabraRVAdapter.WordViewHolder> {
 
-    ArrayList<Palabra> listaPalabras = new ArrayList<>();
-
-    public PalabraRVAdapter (@NonNull DiffUtil.ItemCallback<Palabra> diffCallback) {
+    public PalabraRVAdapter(@NonNull DiffUtil.ItemCallback<Palabra> diffCallback) {
         super(diffCallback);
-    }
-
-    public void addWordListaPalabras(String mPalabra) {
-        Palabra palabra = new Palabra(mPalabra);
-        listaPalabras.add(palabra);
     }
 
     @Override
@@ -33,10 +22,9 @@ public class PalabraRVAdapter extends ListAdapter<Palabra, PalabraRVAdapter.Word
         return WordViewHolder.create(parent);
     }
 
-    @NonNull
     @Override
     public void onBindViewHolder(WordViewHolder holder, int position) {
-        Palabra current = listaPalabras.get(position);
+        Palabra current = getItem(position);
         holder.bind(current.getPalabra());
     }
 
@@ -51,6 +39,8 @@ public class PalabraRVAdapter extends ListAdapter<Palabra, PalabraRVAdapter.Word
         public boolean areContentsTheSame(@NonNull Palabra oldItem, @NonNull Palabra newItem) {
             return oldItem.getPalabra().equals(newItem.getPalabra());
         }
+
+
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////
@@ -62,7 +52,6 @@ public class PalabraRVAdapter extends ListAdapter<Palabra, PalabraRVAdapter.Word
             super(itemView);
             tvPalabra = itemView.findViewById(R.id.palabraTV);
         }
-
         public void bind(String text) {
             tvPalabra.setText(text);
         }

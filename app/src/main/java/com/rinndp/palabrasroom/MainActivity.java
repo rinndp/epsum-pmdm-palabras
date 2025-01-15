@@ -18,11 +18,17 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
+    private PalabraViewModel mWordViewModel;
 
+    public static final int NEW_WORD_ACTIVITY_REQUEST_CODE = 1;
+
+    public static final String EXTRA_REPLY = "com.example.android.wordlistsql.REPLY";
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,6 +41,12 @@ public class MainActivity extends AppCompatActivity {
         recyclerViewPalabras.setLayoutManager(new LinearLayoutManager(this));
 
         FloatingActionButton addWord = findViewById(R.id.addWord);
+
+        mWordViewModel.getPalabras().observe(this, words -> {
+            // Update the cached copy of the words in the adapter.
+            adapter.submitList(words);
+        });
+
 
         addWord.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -49,7 +61,7 @@ public class MainActivity extends AppCompatActivity {
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 EditText palabraNuevaET = inflator.findViewById(R.id.addWordET);
                                 String textoPalabraNueva = palabraNuevaET.getText().toString();
-                                adapter.addWordListaPalabras(textoPalabraNueva);
+                                Palabra palabraNueva = new Palabra(textoPalabraNueva);
                             }
 
                         })
