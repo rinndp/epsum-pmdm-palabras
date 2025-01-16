@@ -12,31 +12,37 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import android.text.TextUtils;
+import android.widget.ImageButton;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
-    private PalabraViewModel mWordViewModel;
+    public PalabraViewModel mWordViewModel;
 
     public static final int NEW_WORD_ACTIVITY_REQUEST_CODE = 1;
 
     public static final String EXTRA_REPLY = "com.example.android.wordlistsql.REPLY";
-    
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
 
+        this.mWordViewModel = new ViewModelProvider(this).get(PalabraViewModel.class);
+
         RecyclerView recyclerViewPalabras = findViewById(R.id.recyclerViewPalabras);
-        PalabraRVAdapter adapter =new PalabraRVAdapter(new PalabraRVAdapter.WordDiff());
+        PalabraRVAdapter adapter =new PalabraRVAdapter(new PalabraRVAdapter.WordDiff(), this);
         recyclerViewPalabras.setAdapter(adapter);
         recyclerViewPalabras.setLayoutManager(new LinearLayoutManager(this));
 
@@ -46,7 +52,6 @@ public class MainActivity extends AppCompatActivity {
             // Update the cached copy of the words in the adapter.
             adapter.submitList(words);
         });
-
 
         addWord.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -59,9 +64,19 @@ public class MainActivity extends AppCompatActivity {
                         .setPositiveButton("Añadir", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
+                                boolean valid;
                                 EditText palabraNuevaET = inflator.findViewById(R.id.addWordET);
-                                String textoPalabraNueva = palabraNuevaET.getText().toString();
-                                Palabra palabraNueva = new Palabra(textoPalabraNueva);
+                                if (TextUtils.isEmpty(palabraNuevaET.getText())) {
+                                    Toast.makeText(
+                                            getApplicationContext(),
+                                            "No se admiten campos vacíos",
+                                            Toast.LENGTH_LONG).show();
+                                } else {
+                                    String word = palabraNuevaET.getText().toString();
+                                    String textoPalabraNueva = palabraNuevaET.getText().toString();
+                                    Palabra palabraNueva = new Palabra(textoPalabraNueva);
+                                    mWordViewModel.insert(palabraNueva);
+                                }
                             }
 
                         })
@@ -73,5 +88,7 @@ public class MainActivity extends AppCompatActivity {
                 materialAlertDialogBuilder.show();
             }
         });
+
+
     }
 }

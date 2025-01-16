@@ -1,10 +1,7 @@
 package com.rinndp.palabrasroom;
-
 import android.app.Application;
-
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
-
 import java.util.List;
 
 public class PalabraViewModel extends AndroidViewModel {
@@ -23,5 +20,9 @@ public class PalabraViewModel extends AndroidViewModel {
 
     public void insert (Palabra palabra) {
         mPalabraRepository.insert(palabra);
+    }
+
+    public void delete (Palabra palabra) {
+        mPalabraRepository.delete(palabra);
     }
 }
